@@ -17,13 +17,16 @@ const app = express();
 
 
 // MongoDB Connection
-try {
-   mongoose.connect(process.env.MONGODB_CONNECTION_STRING);
-   console.log("Connection to MongoDB was established.");
-} catch (error) {
-   console.log("Connection to MongoDB was failed.");
-   console.error(error);
+async function connectToMongoDB() {
+   try {
+      await mongoose.connect(process.env.MONGODB_CONNECTION_STRING);
+      console.log("Connection to MongoDB was established.");
+   } catch (error) {
+      console.log("Connection to MongoDB was failed.");
+      console.error(error);
+   }
 }
+connectToMongoDB();
 
 
 
