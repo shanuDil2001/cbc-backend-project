@@ -2,6 +2,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import { env } from "./validations/validateEnv.js";
+import userRouter from "./routes/userRouter.js";
 
 // Section 02: Create an express app
 const app = express();
@@ -9,7 +10,7 @@ const app = express();
 
 
 // Section 03: Middleware configurations
-
+app.use(express.json());
 
 
 // MongoDB Connection
@@ -27,6 +28,7 @@ connectToMongoDB();
 
 
 // Section 04: Define routes
+app.use("/api/users", userRouter);
 
 
 
