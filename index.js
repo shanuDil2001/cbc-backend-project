@@ -1,11 +1,7 @@
 // Section 01: Import dependencies
 import express from "express";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
-
-dotenv.config(); // Load .env file into process.env object
-
-
+import { env } from "./validations/validateEnv.js";
 
 // Section 02: Create an express app
 const app = express();
@@ -19,7 +15,7 @@ const app = express();
 // MongoDB Connection
 async function connectToMongoDB() {
    try {
-      await mongoose.connect(process.env.MONGODB_CONNECTION_STRING);
+      await mongoose.connect(env.MONGODB_URI);
       console.log("Connection to MongoDB was established.");
    } catch (error) {
       console.log("Connection to MongoDB was failed.");
@@ -35,6 +31,6 @@ connectToMongoDB();
 
 
 // Section 05: Start the server
-app.listen(5000, () => {
-   console.log("Server is running on port: 5000");
+app.listen(env.PORT, () => {
+   console.log(`Server is running on port ${env.PORT}.`);
 });
