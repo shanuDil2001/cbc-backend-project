@@ -112,3 +112,15 @@ export async function loginUser(req, res) {
       });
    }
 }
+
+export function isAdmin(req) {
+   if(req.user != null) {
+      if(req.user.role != "admin") {
+         return false;
+      } else {
+         return true;
+      }
+   } else {
+      return false;
+   }
+}
