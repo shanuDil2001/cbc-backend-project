@@ -23,6 +23,6 @@ export async function createUser(req, res) {
       res.status(500).json({
          message: "Failed to create user."
       });
+      console.error(error);
    }
-
 }

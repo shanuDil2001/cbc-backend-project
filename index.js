@@ -1,12 +1,13 @@
 // Section 01: Import dependencies
 import express from "express";
 import mongoose from "mongoose";
-import { env } from "./validations/validateEnv.js";
+import { env } from "./config/validateEnv.js";
 import userRouter from "./routes/userRouter.js";
+import productRouter from "./routes/productRouter.js";
+
 
 // Section 02: Create an express app
 const app = express();
-
 
 
 // Section 03: Middleware configurations
@@ -26,10 +27,9 @@ async function connectToMongoDB() {
 connectToMongoDB();
 
 
-
 // Section 04: Define routes
 app.use("/api/users", userRouter);
-
+app.use("/api/products", productRouter);
 
 
 // Section 05: Start the server
