@@ -4,41 +4,62 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 export async function createUser(req, res) {
+   
+   async function createUserLogic(req, res) {
+      
+      async function hashPassword(password) {
+         try {
+            return await bcrypt.hash(password, env.SALT_ROUNDS);
+         } catch (error) {
+            throw new Error("Failed to hash password.");
+         }
+      }
 
-   async function hashPassword(password) {
       try {
-         return await bcrypt.hash(password, env.SALT_ROUNDS);
+         const hash = await hashPassword(req.body.password);
+
+         const newUser = new User({
+            email: req.body.email,
+            fname: req.body.fname,
+            lname: req.body.lname,
+            password: hash,
+            role: req.body.role
+         });
+
+         const savedUser = await newUser.save();
+
+         return res.status(201).json({
+            message: "User created successful.",
+            user: {
+               email: savedUser.email,
+               role: savedUser.role
+            }
+         });
       } catch (error) {
-         throw new Error("Failed to hash password.");
+         console.error(error);
+
+         return res.status(500).json({
+            message: error.message || "Internal server error."
+         });
       }
    }
 
-   try {
-      const hash = await hashPassword(req.body.password);
-
-      const newUser = new User({
-         email: req.body.email,
-         fname: req.body.fname,
-         lname: req.body.lname,
-         password: hash,
-         role: req.body.role
-      });
-
-      const savedUser = await newUser.save();
-
-      return res.status(201).json({
-         message: "User created successful.",
-         user: {
-            email: savedUser.email,
-            role: savedUser.role
+   if (req.body.role == "admin") {
+      if (req.user == null) {
+         return res.status(401).json({
+            message: "Please login first."
+         });
+      } else {
+         if (req.user.role != "admin") {
+            return res.status(401).json({
+               message: "Want to create admin accounts? Please login as an Admin."
+            });
+         } else {
+            return await createUserLogic(req, res);
          }
-      });
-   } catch (error) {
-      console.error(error);
-
-      return res.status(500).json({
-         message: error.message || "Internal server error."
-      });
+      }
+   } else {
+      return await createUserLogic(req, res);
    }
 }
 
