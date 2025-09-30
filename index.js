@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import { env } from "./config/validateEnv.js";
 import userRouter from "./routes/userRouter.js";
 import productRouter from "./routes/productRouter.js";
+import authenticateUser from "./middlewares/authenticateUser.js";
 
 
 // Section 02: Create an express app
@@ -12,6 +13,7 @@ const app = express();
 
 // Section 03: Middleware configurations
 app.use(express.json());
+app.use(authenticateUser);
 
 
 // MongoDB Connection
