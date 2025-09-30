@@ -135,5 +135,33 @@ export async function updateProduct(req, res) {
 }
 
 export async function deleteProduct(req, res) {
+   const productId = req.params.productId;
 
+   if (!isAdmin(req)) {
+      return res.status(401).json({
+         message: "You are not authorized to delete products."
+      });
+   } else {
+      try {
+         const product = await Product.findOne({ productId: productId });
+
+         if (product == null) {
+            return res.status(404).json({
+               message: "Enter a valid Product ID."
+            });
+         } else {
+            await Product.deleteOne({ productId: productId });
+
+            return res.status(200).json({
+               message: `Product with the ${productId} deleted successful.`
+            });
+         }
+      } catch (error) {
+         console.error(error);
+
+         return res.status(500).json({
+            message: error.message || "Internal server error."
+         });
+      }
+   }
 }
