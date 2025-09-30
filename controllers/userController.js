@@ -1,18 +1,31 @@
+import { env } from "../config/validateEnv.js";
 import User from "../models/userModel.js";
+import bcrypt from "bcrypt";
 
 export async function createUser(req, res) {
-   const newUser = new User({
-      email: req.body.email,
-      fname: req.body.fname,
-      lname: req.body.lname,
-      password: req.body.password,
-      role: req.body.role
-   });
+
+   async function hashPassword(password) {
+      try {
+         return await bcrypt.hash(password, env.SALT_ROUNDS);
+      } catch (error) {
+         throw new Error("Failed to hash password.");
+      }
+   }
 
    try {
+      const hash = await hashPassword(req.body.password);
+
+      const newUser = new User({
+         email: req.body.email,
+         fname: req.body.fname,
+         lname: req.body.lname,
+         password: hash,
+         role: req.body.role
+      });
+
       const savedUser = await newUser.save();
-      console.log(savedUser);
-      res.status(201).json({
+
+      return res.status(201).json({
          message: "User created successful.",
          user: {
             email: savedUser.email,
@@ -20,9 +33,10 @@ export async function createUser(req, res) {
          }
       });
    } catch (error) {
-      res.status(500).json({
-         message: "Failed to create user."
-      });
       console.error(error);
+
+      return res.status(500).json({
+         message: error.message || "Internal server error."
+      });
    }
 }

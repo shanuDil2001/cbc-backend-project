@@ -5,7 +5,8 @@ dotenv.config() // Load .env file into process.env object
 
 const envSchema = z.object({
    PORT: z.string().transform(Number).default("3000"),
-   MONGODB_URI: z.string().url()
+   MONGODB_URI: z.string().url(),
+   SALT_ROUNDS: z.string().transform(Number).default("10")
 });
 
 const parsed = envSchema.safeParse(process.env);
