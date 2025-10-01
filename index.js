@@ -5,6 +5,7 @@ import { env } from "./config/validateEnv.js";
 import userRouter from "./routes/userRouter.js";
 import productRouter from "./routes/productRouter.js";
 import authenticateUser from "./middlewares/authenticateUser.js";
+import orderRouter from "./routes/orderRouter.js";
 
 
 // Section 02: Create an express app
@@ -32,6 +33,7 @@ connectToMongoDB();
 // Section 04: Define routes
 app.use("/api/users", userRouter);
 app.use("/api/products", productRouter);
+app.use("/api/orders", orderRouter);
 
 
 // Section 05: Start the server

@@ -40,8 +40,7 @@ const orderSchema = mongoose.Schema({
          productInfo: {
             productId: {
                type: String,
-               required: true,
-               unique: true
+               required: true
             },
             name: {
                type: String,
